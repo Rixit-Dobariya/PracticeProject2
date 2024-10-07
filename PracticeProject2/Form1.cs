@@ -49,17 +49,22 @@ namespace PracticeProject2
                 btnEdit.Text = "Hide";
             }
         }
+        void displayData()
+        {
+            dataGridView1.Rows.Clear();
+            string query = "select * from Student";
+            SqlDataAdapter da = new SqlDataAdapter(query, con);
+            DataSet ds = new DataSet();
+            da.Fill(ds);
+            foreach (DataRow dr in ds.Tables[0].Rows)
+            {
+                dataGridView1.Rows.Add(dr[0].ToString(), dr[1].ToString(), dr[2].ToString(), dr[3].ToString(), dr[4].ToString(), dr[5].ToString());
+            }
+        }
 
         private void btnView_Click(object sender, EventArgs e)
         {
-            string query = "select * from Student";
-            SqlDataAdapter da = new SqlDataAdapter(query,con);
-            DataSet ds = new DataSet();
-            da.Fill(ds);
-            foreach(DataRow dr in ds.Tables[0].Rows)
-            {
-                dataGridView1.Rows.Add();
-            }
+            displayData();
         }
 
         private void btnInsert_Click(object sender, EventArgs e)
@@ -74,6 +79,7 @@ namespace PracticeProject2
             cmd.ExecuteNonQuery();
             clear();
             MessageBox.Show("Record inserted successfully!");
+            displayData();
         }
         void clear()
         {
@@ -86,16 +92,19 @@ namespace PracticeProject2
 
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            string query = "update Student set name=@name, course=@course, dob=@dob, address=@address, mob=@contact)";
+            string query = "update Student set name=@name, course=@course, dob=@dob, address=@address, mob=@contact where id=@id";
             SqlCommand cmd = new SqlCommand(query, con);
             cmd.Parameters.AddWithValue("@name", txtName.Text);
             cmd.Parameters.AddWithValue("@course", txtCourse.Text);
             cmd.Parameters.AddWithValue("@dob", txtDOB.Text);
             cmd.Parameters.AddWithValue("@address", txtAddress.Text);
             cmd.Parameters.AddWithValue("@contact", txtContact.Text);
+            cmd.Parameters.AddWithValue("@id", txtID.Text);
+            
             cmd.ExecuteNonQuery();
             clear();
             MessageBox.Show("Record updated successfully!");
+            displayData();
         }
 
         private void btnSearch_Click(object sender, EventArgs e)
@@ -120,6 +129,7 @@ namespace PracticeProject2
             cmd.ExecuteNonQuery();
             clear();
             MessageBox.Show("Record deleted successfully!");
+            displayData();
         }
     }
 }
